@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use Illuminate\Http\Request;
+use App\Models\Role;
+use App\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -20,9 +21,16 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-      $role = Role::Create($request->all());
+      $data = [];
+      $data['role'] = Role::Create($request->all());
+      if($request->permissions) {
+        foreach($request->permissions as $permission) {
+          $data['role']['permissions'][] = new Permission($permission);
+        }  
+        $data['role']->permissions()->saveMany($data['role']['permissions']);
+      }
 
-      return response($role);
+      return response($data);
     }
 
     /**

@@ -9,13 +9,9 @@ class Role extends Model
 {
   protected $fillable = ['name', 'slug'];
 
-  /**
-   * The permissions that belong to the Role
-   *
-   * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-   */
-  public function permissions(): BelongsToMany
+  //
+  public function permissions()
   {
-      return $this->belongsToMany(Permission::class, 'roles_permissions');
+    return $this->belongsToMany(Permission::class, 'roles_permissions');
   }
 }
