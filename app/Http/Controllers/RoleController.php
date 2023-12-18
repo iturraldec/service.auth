@@ -24,10 +24,7 @@ class RoleController extends Controller
       $data = [];
       $data['role'] = Role::Create($request->all());
       if($request->permissions) {
-        foreach($request->permissions as $permission) {
-          $data['role']['permissions'][] = new Permission($permission);
-        }  
-        $data['role']->permissions()->saveMany($data['role']['permissions']);
+        $data['role']['permissions'] = $data['role']->permissions()->createMany($request->permissions);
       }
 
       return response($data);
@@ -38,7 +35,10 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        //
+      $role->permissions;
+      $data['role'] = $role;
+
+      return response(['data' => $data]);
     }
 
     /**
@@ -58,6 +58,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+      $role->permissions()->delete();
       $role->delete();
       
       return response(["message" => "eliminado: ".$role->name]);
