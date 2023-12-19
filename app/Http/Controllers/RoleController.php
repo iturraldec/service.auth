@@ -50,6 +50,13 @@ class RoleController extends Controller
       $role->slug = $request->slug;
       $role->save();
 
+      $data['role'] = $role;
+      $role->permissions()->delete();
+
+      if($request->permissions) {
+        $data['role']['permissions'] = $data['role']->permissions()->createMany($request->permissions);
+      }
+
       return response($role);
     }
 
