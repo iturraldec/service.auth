@@ -17,7 +17,7 @@ class ResponseDataRequest
   }
 
   //
-  public function setResponse(string $status, string $message, object $data)
+  public function setResponse(string $status, string $message, object $data = null)
   {
     $this->response['status']   = $status;
     $this->response['message']  = $message;

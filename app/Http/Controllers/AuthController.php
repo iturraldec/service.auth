@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Custom\ResponseDataRequest;
 
 class AuthController extends Controller
 {
+    private $_response;
+
     /**
      * Create a new AuthController instance.
      *
@@ -15,6 +17,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login']]);
+        $this->_response = new ResponseDataRequest();
     }
 
     /**
@@ -25,12 +28,16 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
+        $token = auth()->claims(['roles' => 'operador de tf'])->attempt($credentials);
+        if (! $token) {
+            $this->_response->setResponse('0', 'No esta autorizado.');
 
-        if (! $token = auth()->claims(['roles' => 'operador de tf'])->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response($this->_response->getJson(), 401);
         }
 
-        return $this->respondWithToken($token);
+        $this->_response->setResponse('1', 'Token de autorización.', $this->respondWithToken($token));
+
+        return response($this->_response->getJson(), 200);
     }
 
     /**
@@ -66,7 +73,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Get the token array structure.
+     * Get the token object structure.
      *
      * @param  string $token
      *
@@ -74,10 +81,12 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
-        ]);
+        $response = new \stdClass();
+        
+        $response->access_token = $token;
+        $response->token_type   = 'bearer';
+        $response->expires_in   = auth()->factory()->getTTL() * 60;
+
+        return $response;
     }
 }
