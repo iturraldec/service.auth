@@ -11,15 +11,15 @@ class ResponseDataRequest
   //
   public function __construct()
   {
-    $this->response['status']   = '0';
+    $this->response['state']    = '0';
     $this->response['message']  = '';
     $this->response['data']     = null;
   }
 
   //
-  public function setResponse(string $status, string $message, object $data = null)
+  public function setResponse(string $state, string $message, object $data = null)
   {
-    $this->response['status']   = $status;
+    $this->response['state']    = $state;
     $this->response['message']  = $message;
     $this->response['data']     = $data;
   }

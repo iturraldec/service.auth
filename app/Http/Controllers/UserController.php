@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Controllers\Request;
 use App\Custom\ResponseDataRequest;
 use App\Models\User;
 
@@ -24,7 +24,7 @@ class UserController extends Controller
     {
       $this->_response->setResponse('1', 'Listado de Ususarios.', User::orderBy('name')->get());
 
-      return response($this->_response->getJson(), Response::HTTP_OK);
+      return response($this->_response->response, Response::HTTP_OK);
     }
 
     /**
@@ -41,8 +41,9 @@ class UserController extends Controller
 				'email' => $request->email,
 				'password' => Hash::make($request->password)
 			]);
+      $this->_response->setResponse('1', 'Ususario creado.', $user);
       
-      return response($user);
+      return response($this->_response->response, Response::HTTP_CREATED);
     }
 
     /**
@@ -51,8 +52,9 @@ class UserController extends Controller
     public function show(User $user)
     {
       $user->roles;
+      $this->_response->setResponse('1', 'Ususario.', $user);
 
-      return response($user);
+      return response($this->_response->response, Response::HTTP_OK);
     }
 
     /**
@@ -70,8 +72,9 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
       }
       $user->save();
+      $this->_response->setResponse('1', 'Ususario modificado.', $user);
 
-      return response($user);
+      return response($this->_response->response, Response::HTTP_OK);
     }
 
     /**
@@ -80,7 +83,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
       $user->delete();
+      $this->_response->setResponse('1', 'Ususario eliminado.');
       
-      return response(["mensagge" => "usuario eliminado"]);
+      return response($this->_response->response, Response::HTTP_OK);
     }
 }
