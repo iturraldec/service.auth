@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Custom\ResponseDataRequest;
-use App\Models\User;
+use App\Models\Permission;
 
-class UserController extends Controller
+class PermissionController extends Controller
 {
   private $_response;
 
@@ -22,7 +21,7 @@ class UserController extends Controller
    */
   public function index()
   {
-    $this->_response->setResponse('1', 'Listado de usuarios.', User::orderBy('name')->get());
+    $this->_response->setResponse('1', 'Listado de permisos.', Permission::orderBy('name')->get());
 
     return response($this->_response->response, Response::HTTP_OK);
   }
@@ -34,14 +33,11 @@ class UserController extends Controller
   {
     // faltan las validaciones correspondientes
 
-    // falta codigo para agregar los roles que tendra el usuario
-
-    $user = User::create([
+    $permission = Permission::create([
       'name' => $request->name,
-      'email' => $request->email,
-      'password' => Hash::make($request->password)
+      'slug' => $request->slug
     ]);
-    $this->_response->setResponse('1', 'Ususario creado.', $user);
+    $this->_response->setResponse('1', 'Permiso creado.', $permission);
     
     return response($this->_response->response, Response::HTTP_CREATED);
   }
@@ -49,10 +45,10 @@ class UserController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(User $user)
+  public function show(Permission $permission)
   {
-    $user->roles;
-    $this->_response->setResponse('1', 'Ususario.', $user);
+    $permission->roles;
+    $this->_response->setResponse('1', 'Permiso.', $permission);
 
     return response($this->_response->response, Response::HTTP_OK);
   }
@@ -60,19 +56,15 @@ class UserController extends Controller
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, User $user)
+  public function update(Request $request, Permission $permission)
   {
+
     // faltan las validaciones correspondientes
 
-    // falta codigo para agregar los roles que tendra el usuario
-
-    $user->name = $request->name;
-    $user->email = $request->email;
-    if($request->password) {
-      $user->password = Hash::make($request->password);
-    }
-    $user->save();
-    $this->_response->setResponse('1', 'Ususario modificado.', $user);
+    $permission->name = $request->name;
+    $permission->slug = $request->slug;
+    $permission->save();
+    $this->_response->setResponse('1', 'Permiso modificado.', $permission);
 
     return response($this->_response->response, Response::HTTP_OK);
   }
@@ -80,10 +72,10 @@ class UserController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(User $user)
+  public function destroy(Permission $permission)
   {
-    $user->delete();
-    $this->_response->setResponse('1', 'Ususario eliminado.');
+    $permission->delete();
+    $this->_response->setResponse('1', 'Permiso eliminado.');
     
     return response($this->_response->response, Response::HTTP_OK);
   }
