@@ -25,7 +25,8 @@ class DashboardController extends Controller
     $data->data = array(
       array('concepto' => 'Permisos','cantidad'  => Permission::count()),
       array('concepto' => 'Roles','cantidad'  => Role::count()),
-      array('concepto' => 'Usuarios','cantidad'  => User::count()),
+      array('concepto' => 'Usuarios activos','cantidad'  => User::where('is_asset', true)->count()),
+      array('concepto' => 'Usuarios inactivos','cantidad'  => User::where('is_asset', false)->count()),
     );
 
     $this->_response->setResponse('1', 'Dashboard.', $data);
