@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
-        $token = auth()->claims(['roles' => 'operador de tf'])->attempt($credentials);
+        $token = auth()->attempt($credentials);
         if (! $token) {
             $this->_response->setResponse('0', 'No esta autorizado.');
 
