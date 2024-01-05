@@ -19,9 +19,15 @@ class PermissionController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    $this->_response->setResponse('1', 'Listado de permisos.', Permission::orderBy('name')->get());
+
+    if($request->page) {
+      $this->_response->setResponse('1', 'Listado de permisos, paginados.', Permission::orderBy('name')->paginate(5));
+    }
+    else {
+      $this->_response->setResponse('1', 'Listado de permisos.', Permission::orderBy('name')->get());
+    }
 
     return response($this->_response->response, Response::HTTP_OK);
   }

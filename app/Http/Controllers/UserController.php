@@ -27,6 +27,10 @@ class UserController extends Controller
     return response($this->_response->response, Response::HTTP_OK);
   }
 
+  public function usersWithPaginate() {
+    return response(User::simplePaginate(5));
+  }
+
   /**
    * Store a newly created resource in storage.
    */
