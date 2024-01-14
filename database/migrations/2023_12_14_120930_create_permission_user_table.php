@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users_permissions', function (Blueprint $table) {
-            $table->unsignedInteger('user_id');
+        Schema::create('permission_user', function (Blueprint $table) {
             $table->unsignedInteger('permission_id');
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('user_id');
+            
             $table->foreign('permission_id')->references('id')->on('permissions')->onDelete('cascade');
-
-            $table->primary(['user_id', 'permission_id']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->primary(['permission_id', 'user_id']);
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users_permissions');
+        Schema::dropIfExists('permission_user');
     }
 };
