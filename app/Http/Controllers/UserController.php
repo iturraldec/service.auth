@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Custom\ResponseDataRequest;
 use App\Models\User;
+use stdClass;
 
 class UserController extends Controller
 {
@@ -20,15 +21,16 @@ class UserController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    $this->_response->setResponse('1', 'Listado de usuarios.', User::orderBy('name')->get());
-
+    if($request->page) {
+      $this->_response->setResponse('1', 'Listado de usuarios, paginados.', User::orderBy('name')->with('roles')->paginate(15));
+    }
+    else {
+      $this->_response->setResponse('1', 'Listado de usuarios.', User::with('roles')->get());
+    }
+    
     return response($this->_response->response, Response::HTTP_OK);
-  }
-
-  public function usersWithPaginate() {
-    return response(User::simplePaginate(5));
   }
 
   /**
@@ -37,15 +39,19 @@ class UserController extends Controller
   public function store(Request $request)
   {
     // faltan las validaciones correspondientes
-
-    // falta codigo para agregar los roles que tendra el usuario
-
-    $user = User::create([
+    
+    $data = new stdClass();
+    $data->user = User::create([
       'name' => $request->name,
       'email' => $request->email,
       'password' => Hash::make($request->password)
     ]);
-    $this->_response->setResponse('1', 'Ususario creado.', $user);
+
+    if($request->roles) {
+      $data->roles = $data->user->roles()->sync($request->roles);
+    };
+
+    $this->_response->setResponse('1', 'Ususario creado.', $data);
     
     return response($this->_response->response, Response::HTTP_CREATED);
   }

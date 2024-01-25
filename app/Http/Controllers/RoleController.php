@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Custom\ResponseDataRequest;
 use App\Models\Role;
-use App\Models\Permission;
 use stdClass;
 
 class RoleController extends Controller
