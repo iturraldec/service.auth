@@ -74,14 +74,21 @@ class UserController extends Controller
   {
     // faltan las validaciones correspondientes
 
-    // falta codigo para agregar los roles que tendra el usuario
-
     $user->name = $request->name;
     $user->email = $request->email;
-    if($request->password) {
-      $user->password = Hash::make($request->password);
+    if(strlen($request->password) > 0) {
+      $user->password = $request->password;
     }
+
     $user->save();
+
+    if(count($request->roles) == 0) {
+      $user->roles()->detach();
+    }
+    else {
+      $user->roles()->sync($request->roles);
+    }
+
     $this->_response->setResponse('1', 'Ususario modificado.', $user);
 
     return response($this->_response->response, Response::HTTP_OK);
